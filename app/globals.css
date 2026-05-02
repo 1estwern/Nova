@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /*
   Тёмный лес с тёплым светом: глубокий фон без чистого чёрного, мягкий основной текст,
