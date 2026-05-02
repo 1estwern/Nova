@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/*
+  Тёмный лес с тёплым светом: глубокий фон без чистого чёрного, мягкий основной текст,
+  солнечное пятно сверху — комфортно для глаз в режиме тёмной темы.
+*/
+
+:root {
+  color-scheme: dark;
+
+  --nova-canvas: #141c14;
+  --nova-bg: #121913;
+  --nova-surface: #182018;
+  --nova-card: #1e2a1c;
+
+  --nova-border: #354433;
+  --nova-text: #e4eadd;
+  --nova-muted: #9daa90;
+  --nova-placeholder: #6f7f66;
+
+  --nova-accent: #7cbc6a;
+  --nova-accent-hover: #91cc80;
+  --nova-accent-soft: #283528;
+
+  /* Заголовок героя: «подсвеченные» слова, не чистый белый */
+  --nova-forest: #dde8cf;
+  --nova-moss: #a6bf96;
+  --nova-lichen: #7f9474;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--nova-bg);
+  background-image:
+    radial-gradient(
+      ellipse 115% 75% at 50% -8%,
+      rgb(255 232 185 / 0.14),
+      transparent 54%
+    ),
+    radial-gradient(
+      ellipse 88% 65% at 0% 48%,
+      rgb(62 94 54 / 0.35),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse 88% 62% at 100% 52%,
+      rgb(52 78 46 / 0.38),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse 100% 55% at 50% 100%,
+      rgb(28 42 26 / 0.65),
+      transparent 58%
+    );
+  background-attachment: fixed;
+  color: var(--nova-text);
+}
+
+/* Частицы при нажатии FAB «идея» */
+@keyframes nova-idea-particle-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.35)
+      rotate(var(--burst-spin, 0deg));
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1.05)
+      rotate(var(--burst-spin-end, 360deg));
+  }
+}
+
+.nova-idea-particle {
+  animation-name: nova-idea-particle-burst;
+  animation-timing-function: cubic-bezier(0.22, 0.95, 0.28, 1);
+  animation-fill-mode: forwards;
+}
+
+@keyframes nova-idea-fab-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 14px 40px rgba(0, 0, 0, 0.45),
+      0 0 0 0 rgb(124 188 106 / 0.45);
+  }
+  55% {
+    box-shadow:
+      0 14px 40px rgba(0, 0, 0, 0.45),
+      0 0 0 16px rgb(124 188 106 / 0);
+  }
+}
+
+.nova-idea-fab-pulse {
+  animation: nova-idea-fab-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes fadeNova {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
