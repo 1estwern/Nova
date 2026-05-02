@@ -139,7 +139,7 @@ export function ChatPanel() {
             }
           >
             
-                    <ReactMarkdown className="prose prose-sm prose-invert max-w-none">{m.content}</ReactMarkdown>
+                    <ReactMarkdown components={{p: ({children}) => <p className="mb-2">{children}</p>, strong: ({children}) => <strong className="font-semibold text-[var(--nova-text)]">{children}</strong>, h3: ({children}) => <h3 className="font-bold mt-3 mb-1">{children}</h3>, li: ({children}) => <li className="ml-4 list-disc">{children}</li>}}>{m.content}</ReactMarkdown>
           </div>
         ))}
         {loading && (
