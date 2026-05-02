@@ -82,7 +82,7 @@ export function JournalPhoneMock({ className = "" }: { className?: string }) {
             </button>
           </div>
           <p className="mt-4 text-center text-xs text-[var(--nova-muted)]">
-            Nova Muse
+            Nova
           </p>
         </div>
       </div>

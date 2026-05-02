@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Nova Muse";
+export const alt = "Nova";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -70,7 +70,7 @@ export default function OpenGraphImage() {
               'ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
           }}
         >
-          Nova Muse
+          Nova
         </h1>
         <p
           style={{

@@ -36,7 +36,7 @@ export function SiteHeader() {
       <header className="sticky top-0 z-40 border-b border-[var(--nova-border)] bg-[var(--nova-surface)]/95 px-4 py-3 backdrop-blur-md md:hidden">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-[var(--nova-forest)]">
-            Nova Muse
+            Nova
           </Link>
           <Link
             href="/ideas"
@@ -66,13 +66,13 @@ export function SiteHeader() {
         <Link
           href="/"
           className="mb-5 flex h-11 w-full items-center justify-center rounded-xl px-2 group-hover/rail:justify-start"
-          aria-label="Nova Muse"
+          aria-label="Nova"
         >
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[rgb(124_188_106/0.18)] text-xs font-semibold text-[var(--nova-forest)]">
             N
           </span>
           <span className="ml-0 max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold tracking-tight text-[var(--nova-forest)] opacity-0 transition-all duration-200 group-hover/rail:ml-3 group-hover/rail:max-w-[160px] group-hover/rail:opacity-100 group-focus-within/rail:ml-3 group-focus-within/rail:max-w-[160px] group-focus-within/rail:opacity-100">
-            Nova Muse
+            Nova
           </span>
         </Link>
 

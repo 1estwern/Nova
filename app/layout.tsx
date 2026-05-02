@@ -11,20 +11,20 @@ const sans = Inter({
   variable: "--font-sans",
 });
 
-const titleDefault = "Nova Muse";
+const titleDefault = "Nova";
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: {
     default: titleDefault,
-    template: "%s · Nova Muse",
+    template: "%s · Nova",
   },
   description:
     "Веб-приложение для заметок, просмотра тем и генерации идей.",
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    siteName: "Nova Muse",
+    siteName: "Nova",
     title: titleDefault,
     description:
       "Заметки, реакции, галерея тем и генерация идей в одном интерфейсе.",

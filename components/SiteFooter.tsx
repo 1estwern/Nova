@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-8 lg:flex-row lg:justify-between lg:gap-12">
           <div className="max-w-sm">
-            <p className="text-sm font-semibold text-[var(--nova-text)]">Nova Muse</p>
+            <p className="text-sm font-semibold text-[var(--nova-text)]">Nova</p>
             <p className="mt-2 text-xs leading-relaxed text-[var(--nova-muted)]">
               Сервис для заметок, просмотра тем и генерации идей.
             </p>
@@ -39,7 +39,7 @@ export function SiteFooter() {
           </nav>
         </div>
         <p className="mt-10 text-[11px] text-[var(--nova-placeholder)]">
-          © {new Date().getFullYear()} Nova Muse
+          © {new Date().getFullYear()} Nova
         </p>
       </div>
     </footer>

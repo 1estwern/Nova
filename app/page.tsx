@@ -34,7 +34,7 @@ export default function HomePage() {
         />
         <div className="relative z-[2] mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--nova-moss)]">
-            Nova Muse
+            Nova
           </p>
           <h1 className="mt-5 max-w-4xl text-3xl font-semibold leading-tight tracking-tight text-[var(--nova-forest)] sm:text-4xl md:text-5xl">
             Продукт для заметок, галереи и генерации идей.

@@ -277,7 +277,7 @@ export function IdeaBloomFAB() {
                 Генерирую другую идею...
               </div>
             ) : null}
-            <p className="mt-4 text-center text-[11px] text-[var(--nova-muted)]">Nova Muse</p>
+            <p className="mt-4 text-center text-[11px] text-[var(--nova-muted)]">Nova</p>
 
             <button
               ref={closeBtnRef}
