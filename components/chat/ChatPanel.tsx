@@ -1,5 +1,6 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -137,7 +138,8 @@ export function ChatPanel() {
                 : "mr-6 rounded-3xl rounded-bl-lg border border-[var(--nova-border)] bg-[var(--nova-card)] px-4 py-3 text-sm leading-relaxed text-[var(--nova-text)] shadow-sm"
             }
           >
-            {m.content}
+            
+                    <ReactMarkdown className="prose prose-sm prose-invert max-w-none">{m.content}</ReactMarkdown>
           </div>
         ))}
         {loading && (
