@@ -8,10 +8,10 @@ import {
   type ReactionIcon,
 } from "@/lib/note-reactions";
 import {
-  SEED_POSTS,
   extractTags,
   formatNoteTime,
   loadUserNotes,
+  postsForFeed,
   saveUserNotes,
   type NotePost,
 } from "@/lib/notes-storage";
@@ -63,7 +63,8 @@ export function NotesPageContent() {
     if (composeOpen) textareaRef.current?.focus();
   }, [composeOpen]);
 
-  const posts = [...userPosts, ...SEED_POSTS];
+  const posts = postsForFeed(userPosts);
+  const showingExamples = userPosts.length === 0;
 
   const resetCompose = useCallback(() => {
     setText("");
@@ -120,11 +121,20 @@ export function NotesPageContent() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-[var(--nova-muted)]">
           {hydrated ? (
-            <>
-              В ленте <span className="font-semibold text-[var(--nova-text)]">{posts.length}</span>{" "}
-              {posts.length === 1 ? "запись" : posts.length < 5 ? "записи" : "записей"}
-              {userPosts.length > 0 ? ` · твоих: ${userPosts.length}` : ""}
-            </>
+            showingExamples ? (
+              <>
+                Примеры записей —{" "}
+                <span className="text-[var(--nova-placeholder)]">
+                  исчезнут, как только добавишь свою
+                </span>
+              </>
+            ) : (
+              <>
+                Твоя лента ·{" "}
+                <span className="font-semibold text-[var(--nova-text)]">{userPosts.length}</span>{" "}
+                {userPosts.length === 1 ? "запись" : userPosts.length < 5 ? "записи" : "записей"}
+              </>
+            )
           ) : (
             "Загрузка ленты…"
           )}
@@ -268,7 +278,7 @@ export function NotesPageContent() {
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-[var(--nova-text)]">
-                  {post.isUser ? "Твоя запись" : "Личный пост"}
+                  {post.isUser ? "Твоя запись" : showingExamples ? "Пример" : "Запись"}
                 </p>
                 <p className="text-xs text-[var(--nova-placeholder)]">{post.time}</p>
               </div>
