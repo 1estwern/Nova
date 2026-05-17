@@ -109,3 +109,40 @@ body {
     opacity: 1;
   }
 }
+
+/* Лендинг: акцентный CTA и мягкое свечение героя */
+@keyframes nova-cta-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 12px 36px rgb(0 0 0 / 0.38),
+      0 0 0 0 rgb(124 188 106 / 0.35);
+  }
+  50% {
+    box-shadow:
+      0 16px 44px rgb(0 0 0 / 0.42),
+      0 0 0 10px rgb(124 188 106 / 0);
+  }
+}
+
+.nova-cta-primary {
+  background: linear-gradient(135deg, var(--nova-accent) 0%, #4e8f42 100%);
+  animation: nova-cta-glow 3.2s ease-in-out infinite;
+}
+
+.nova-cta-primary:hover {
+  filter: brightness(1.06);
+}
+
+.nova-hero-spotlight {
+  background:
+    radial-gradient(ellipse 72% 55% at 50% -12%, rgb(255 226 176 / 0.22), transparent 58%),
+    radial-gradient(ellipse 48% 38% at 88% 8%, rgb(124 188 106 / 0.14), transparent 50%),
+    radial-gradient(ellipse 48% 38% at 12% 18%, rgb(84 118 74 / 0.18), transparent 50%);
+}
+
+.nova-final-cta-band {
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 100%, rgb(124 188 106 / 0.2), transparent 55%),
+    linear-gradient(165deg, rgb(30 44 28 / 0.95) 0%, var(--nova-surface) 45%, var(--nova-bg) 100%);
+}
