@@ -1,0 +1,12 @@
+---
+description: Autonomous execution — user assigns tasks and corrections only.
+alwaysApply: true
+---
+
+# Режим работы в Nova
+
+- Доводи задачи до конца сам: код, проверка (`npm run build`), коммит, `git push` (деплой Vercel с `main`).
+- Не спрашивай разрешения на очевидные следующие шаги (деплой после правок сайта, исправление сборки).
+- Пользователь даёт задания и корректировки — кратко отчитывайся: что сделано, где смотреть (локально / прод URL).
+- Продакшен: https://nova-gfx879g4j-1estwerns-projects.vercel.app — после push жди пересборку Vercel.
+- Не коммить `.env`, секреты, токены. `.vscode/` — только по запросу.

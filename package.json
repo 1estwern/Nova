@@ -7,9 +7,11 @@
     "dev:reset": "rm -rf .next && node ./node_modules/next/dist/bin/next dev --hostname 127.0.0.1 --port 3000",
     "build": "node ./node_modules/next/dist/bin/next build",
     "start": "node ./node_modules/next/dist/bin/next start",
-    "lint": "node ./node_modules/next/dist/bin/next lint"
+    "lint": "node ./node_modules/next/dist/bin/next lint",
+    "pptx:ink-aura": "node ./scripts/generate-ink-aura-presentation.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
     "@tailwindcss/typography": "^0.5.19",
     "next": "^15.1.0",
     "react": "^19.0.0",
@@ -23,6 +25,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.1.0",
+    "pptxgenjs": "^3.12.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0"
   }
