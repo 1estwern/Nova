@@ -1,49 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { chatAutostartFromNotesHref } from "@/lib/chat-routes";
+import { DEFAULT_REACTION, NOTE_REACTIONS, type ReactionIcon } from "@/lib/note-reactions";
 import {
-  DEFAULT_REACTION,
-  NOTE_REACTIONS,
-  type ReactionIcon,
-} from "@/lib/note-reactions";
-import {
-  extractTags,
-  formatNoteTime,
+  createUserNote,
   loadUserNotes,
+  normalizeNote,
   postsForFeed,
   saveUserNotes,
   type NotePost,
 } from "@/lib/notes-storage";
-
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-
-function readImageFile(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!file.type.startsWith("image/")) {
-      reject(new Error("not-image"));
-      return;
-    }
-    if (file.size > MAX_IMAGE_BYTES) {
-      reject(new Error("too-large"));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
-}
+import { NoteFormPanel } from "@/components/notes/NoteFormPanel";
 
 export function NotesPageContent() {
-  const fileInputId = useId();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const [userPosts, setUserPosts] = useState<NotePost[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [reaction, setReaction] = useState<ReactionIcon>(DEFAULT_REACTION);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -60,61 +35,73 @@ export function NotesPageContent() {
     saveUserNotes(userPosts);
   }, [userPosts, hydrated]);
 
-  useEffect(() => {
-    if (composeOpen) textareaRef.current?.focus();
-  }, [composeOpen]);
-
   const posts = postsForFeed(userPosts);
   const showingExamples = userPosts.length === 0;
 
-  const resetCompose = useCallback(() => {
+  const resetForm = useCallback(() => {
     setText("");
     setReaction(DEFAULT_REACTION);
     setImageUrl(null);
     setImageError(null);
     setSubmitError(null);
-    if (fileRef.current) fileRef.current.value = "";
   }, []);
 
   const closeCompose = useCallback(() => {
     setComposeOpen(false);
-    resetCompose();
-  }, [resetCompose]);
+    resetForm();
+  }, [resetForm]);
 
-  const onPickImage = async (file: File | undefined) => {
+  const cancelEdit = useCallback(() => {
+    setEditingId(null);
+    resetForm();
+  }, [resetForm]);
+
+  const startEdit = (post: NotePost) => {
+    if (!post.isUser) return;
+    setComposeOpen(false);
+    setEditingId(post.id);
+    setText(post.text);
+    setReaction(post.top);
+    setImageUrl(post.imageUrl ?? null);
     setImageError(null);
-    if (!file) return;
-    try {
-      const dataUrl = await readImageFile(file);
-      setImageUrl(dataUrl);
-    } catch (e) {
-      const err = e instanceof Error ? e.message : "";
-      if (err === "too-large") {
-        setImageError("Фото до 2 МБ — выбери файл поменьше.");
-      } else {
-        setImageError("Не удалось загрузить фото. Попробуй JPG или PNG.");
-      }
-      setImageUrl(null);
-    }
+    setSubmitError(null);
   };
 
-  const submitNote = () => {
+  const submitCreate = () => {
     const trimmed = text.trim();
     if (!trimmed) {
       setSubmitError("Напиши хотя бы одну мысль — можно коротко.");
       return;
     }
-    const post: NotePost = {
-      id: `user-${Date.now()}`,
-      time: formatNoteTime(),
-      text: trimmed,
-      tags: extractTags(trimmed),
-      top: reaction,
-      imageUrl: imageUrl ?? undefined,
-      isUser: true,
-    };
-    setUserPosts((prev) => [post, ...prev]);
+    setUserPosts((prev) => [
+      createUserNote({ text: trimmed, top: reaction, imageUrl: imageUrl ?? undefined }),
+      ...prev,
+    ]);
     closeCompose();
+  };
+
+  const submitEdit = () => {
+    const trimmed = text.trim();
+    if (!trimmed || !editingId) {
+      setSubmitError("Текст не может быть пустым.");
+      return;
+    }
+    setUserPosts((prev) =>
+      prev.map((p) => {
+        if (p.id !== editingId) return p;
+        const next: NotePost = { ...p, text: trimmed, top: reaction };
+        if (imageUrl) next.imageUrl = imageUrl;
+        else delete next.imageUrl;
+        return normalizeNote(next);
+      })
+    );
+    cancelEdit();
+  };
+
+  const deleteNote = (id: string) => {
+    if (!confirm("Удалить эту запись?")) return;
+    setUserPosts((prev) => prev.filter((p) => p.id !== id));
+    if (editingId === id) cancelEdit();
   };
 
   return (
@@ -142,7 +129,13 @@ export function NotesPageContent() {
         </p>
         <button
           type="button"
-          onClick={() => (composeOpen ? closeCompose() : setComposeOpen(true))}
+          onClick={() => {
+            if (composeOpen) closeCompose();
+            else {
+              cancelEdit();
+              setComposeOpen(true);
+            }
+          }}
           className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/25 transition hover:to-[var(--nova-accent-hover)]"
           aria-expanded={composeOpen}
           aria-controls="nova-add-note-panel"
@@ -152,121 +145,27 @@ export function NotesPageContent() {
       </div>
 
       {composeOpen ? (
-        <div
-          id="nova-add-note-panel"
-          className="mb-8 rounded-3xl border border-[var(--nova-accent)]/35 bg-[var(--nova-card)] p-5 shadow-[0_16px_42px_rgba(0,0,0,0.28)] ring-1 ring-[var(--nova-accent)]/20 sm:p-6"
-        >
-          <h2 className="text-sm font-semibold text-[var(--nova-forest)]">Новая запись</h2>
-          <p className="mt-1 text-xs text-[var(--nova-placeholder)]">
-            Текст, фото по желанию и реакция — что для тебя важно сейчас.
-          </p>
-
-          <label className="mt-4 block">
-            <span className="sr-only">Текст записи</span>
-            <textarea
-              ref={textareaRef}
-              value={text}
-              onChange={(e) => {
-                setText(e.target.value);
-                setSubmitError(null);
-              }}
-              rows={4}
-              placeholder="О чём думаешь? Можно с #тегами…"
-              className="w-full resize-y rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-surface)] px-4 py-3 text-sm leading-relaxed text-[var(--nova-text)] placeholder:text-[var(--nova-placeholder)] focus:border-[var(--nova-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nova-accent)]/25"
-            />
-          </label>
-
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <input
-              ref={fileRef}
-              id={fileInputId}
-              type="file"
-              accept="image/*"
-              className="sr-only"
-              onChange={(e) => onPickImage(e.target.files?.[0])}
-            />
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--nova-border)] bg-[var(--nova-surface)] px-4 py-2 text-xs font-semibold text-[var(--nova-text)] transition hover:border-[var(--nova-accent)]/45"
-            >
-              <span aria-hidden>📷</span>
-              {imageUrl ? "Сменить фото" : "Добавить фото"}
-            </button>
-            {imageUrl ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setImageUrl(null);
-                  if (fileRef.current) fileRef.current.value = "";
-                }}
-                className="text-xs font-medium text-[var(--nova-muted)] underline-offset-2 hover:text-[var(--nova-text)] hover:underline"
-              >
-                Убрать фото
-              </button>
-            ) : null}
-          </div>
-
-          {imageError ? (
-            <p className="mt-2 text-xs text-red-300/90" role="alert">
-              {imageError}
-            </p>
-          ) : null}
-
-          {imageUrl ? (
-            <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--nova-border)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt="Превью к записи"
-                className="max-h-48 w-full object-cover"
-              />
-            </div>
-          ) : null}
-
-          <div className="mt-4">
-            <p className="text-xs font-medium text-[var(--nova-muted)]">Реакция на запись</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {NOTE_REACTIONS.map((r) => (
-                <button
-                  key={r.label}
-                  type="button"
-                  title={r.label}
-                  onClick={() => setReaction(r.icon)}
-                  className={`rounded-full px-3 py-1.5 text-base transition ${
-                    reaction === r.icon
-                      ? "bg-[var(--nova-accent)] text-white ring-2 ring-[rgb(255_232_185/0.35)]"
-                      : "bg-[var(--nova-accent-soft)] text-[var(--nova-muted)] hover:text-[var(--nova-text)]"
-                  }`}
-                >
-                  {r.icon}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {submitError ? (
-            <p className="mt-3 text-xs text-red-300/90" role="alert">
-              {submitError}
-            </p>
-          ) : null}
-
-          <div className="mt-5 flex flex-wrap gap-2 border-t border-[var(--nova-border)] pt-4">
-            <button
-              type="button"
-              onClick={submitNote}
-              className="rounded-full bg-[var(--nova-accent)] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
-            >
-              Сохранить в ленту
-            </button>
-            <button
-              type="button"
-              onClick={closeCompose}
-              className="rounded-full px-5 py-2.5 text-sm font-medium text-[var(--nova-muted)] ring-1 ring-[var(--nova-border)] hover:text-[var(--nova-text)]"
-            >
-              Отмена
-            </button>
-          </div>
+        <div id="nova-add-note-panel">
+          <NoteFormPanel
+            mode="create"
+            title="Новая запись"
+            hint="Текст, фото по желанию и реакция. Первый #тег — категория в галерее."
+            text={text}
+            onTextChange={(v) => {
+              setText(v);
+              setSubmitError(null);
+            }}
+            reaction={reaction}
+            onReactionChange={setReaction}
+            imageUrl={imageUrl}
+            onImageUrlChange={setImageUrl}
+            imageError={imageError}
+            onImageError={setImageError}
+            submitError={submitError}
+            onSubmit={submitCreate}
+            onCancel={closeCompose}
+            submitLabel="Сохранить в ленту"
+          />
         </div>
       ) : null}
 
@@ -277,53 +176,100 @@ export function NotesPageContent() {
               key={post.id}
               className="rounded-3xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-5 shadow-[0_16px_42px_rgba(0,0,0,0.24)]"
             >
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-[var(--nova-text)]">
                   {post.isUser ? "Твоя запись" : showingExamples ? "Пример" : "Запись"}
                 </p>
-                <p className="text-xs text-[var(--nova-placeholder)]">{post.time}</p>
-              </div>
-              {post.imageUrl ? (
-                <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--nova-border)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={post.imageUrl}
-                    alt=""
-                    className="max-h-64 w-full object-cover"
-                  />
+                <div className="flex items-center gap-2">
+                  {post.isUser ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => startEdit(post)}
+                        className="text-xs font-semibold text-[var(--nova-accent)] hover:text-[var(--nova-accent-hover)]"
+                      >
+                        Редактировать
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteNote(post.id)}
+                        className="text-xs text-[var(--nova-placeholder)] hover:text-red-300"
+                      >
+                        Удалить
+                      </button>
+                    </>
+                  ) : null}
+                  <p className="text-xs text-[var(--nova-placeholder)]">{post.time}</p>
                 </div>
-              ) : null}
-              <p className="mt-4 text-sm leading-relaxed text-[var(--nova-muted)]">{post.text}</p>
-              {post.tags.length > 0 ? (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-[var(--nova-accent-soft)] px-3 py-1 text-xs text-[var(--nova-muted)]"
-                    >
-                      #{tag}
+              </div>
+
+              {editingId === post.id ? (
+                <NoteFormPanel
+                  mode="edit"
+                  title="Редактирование"
+                  hint="Изменения сохранятся в ленте и в галерее."
+                  text={text}
+                  onTextChange={(v) => {
+                    setText(v);
+                    setSubmitError(null);
+                  }}
+                  reaction={reaction}
+                  onReactionChange={setReaction}
+                  imageUrl={imageUrl}
+                  onImageUrlChange={setImageUrl}
+                  imageError={imageError}
+                  onImageError={setImageError}
+                  submitError={submitError}
+                  onSubmit={submitEdit}
+                  onCancel={cancelEdit}
+                  submitLabel="Сохранить изменения"
+                />
+              ) : (
+                <>
+                  {post.imageUrl ? (
+                    <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--nova-border)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={post.imageUrl}
+                        alt=""
+                        className="max-h-64 w-full object-cover"
+                      />
+                    </div>
+                  ) : null}
+                  <p className="mt-4 text-sm leading-relaxed text-[var(--nova-muted)]">
+                    {post.text}
+                  </p>
+                  {post.tags.length > 0 ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-[var(--nova-accent-soft)] px-3 py-1 text-xs text-[var(--nova-muted)]"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                  <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[var(--nova-border)] pt-4 text-xs">
+                    {NOTE_REACTIONS.map((r) => (
+                      <span
+                        key={r.label}
+                        className={`rounded-full px-3 py-1.5 ${
+                          r.icon === post.top
+                            ? "bg-[var(--nova-accent)] text-white"
+                            : "bg-[var(--nova-accent-soft)] text-[var(--nova-muted)]"
+                        }`}
+                      >
+                        {r.icon}
+                      </span>
+                    ))}
+                    <span className="ml-auto text-[var(--nova-placeholder)]">
+                      Приоритет: {post.top}
                     </span>
-                  ))}
-                </div>
-              ) : null}
-              <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[var(--nova-border)] pt-4 text-xs">
-                {NOTE_REACTIONS.map((r) => (
-                  <span
-                    key={r.label}
-                    className={`rounded-full px-3 py-1.5 ${
-                      r.icon === post.top
-                        ? "bg-[var(--nova-accent)] text-white"
-                        : "bg-[var(--nova-accent-soft)] text-[var(--nova-muted)]"
-                    }`}
-                    aria-hidden={r.icon !== post.top}
-                  >
-                    {r.icon}
-                  </span>
-                ))}
-                <span className="ml-auto text-[var(--nova-placeholder)]">
-                  Приоритет: {post.top}
-                </span>
-              </div>
+                  </div>
+                </>
+              )}
             </article>
           ))}
         </div>
@@ -360,4 +306,3 @@ export function NotesPageContent() {
     </section>
   );
 }
-
