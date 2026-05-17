@@ -104,6 +104,12 @@ export function NotesPageContent() {
     if (editingId === id) cancelEdit();
   };
 
+  const setNoteReaction = (id: string, top: ReactionIcon) => {
+    setUserPosts((prev) =>
+      prev.map((p) => (p.id === id ? normalizeNote({ ...p, top }) : p))
+    );
+  };
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -252,18 +258,32 @@ export function NotesPageContent() {
                     </div>
                   ) : null}
                   <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[var(--nova-border)] pt-4 text-xs">
-                    {NOTE_REACTIONS.map((r) => (
-                      <span
-                        key={r.label}
-                        className={`rounded-full px-3 py-1.5 ${
-                          r.icon === post.top
-                            ? "bg-[var(--nova-accent)] text-white"
-                            : "bg-[var(--nova-accent-soft)] text-[var(--nova-muted)]"
-                        }`}
-                      >
-                        {r.icon}
-                      </span>
-                    ))}
+                    {NOTE_REACTIONS.map((r) => {
+                      const selected = r.icon === post.top;
+                      const reactionClass = `rounded-full px-3 py-1.5 text-base transition ${
+                        selected
+                          ? "bg-[var(--nova-accent)] text-white ring-2 ring-[rgb(255_232_185/0.35)]"
+                          : "bg-[var(--nova-accent-soft)] text-[var(--nova-muted)] hover:text-[var(--nova-text)]"
+                      }`;
+
+                      return post.isUser ? (
+                        <button
+                          key={r.label}
+                          type="button"
+                          title={r.label}
+                          aria-label={r.label}
+                          aria-pressed={selected}
+                          onClick={() => setNoteReaction(post.id, r.icon)}
+                          className={reactionClass}
+                        >
+                          {r.icon}
+                        </button>
+                      ) : (
+                        <span key={r.label} className={reactionClass} aria-hidden>
+                          {r.icon}
+                        </span>
+                      );
+                    })}
                     <span className="ml-auto text-[var(--nova-placeholder)]">
                       Приоритет: {post.top}
                     </span>
