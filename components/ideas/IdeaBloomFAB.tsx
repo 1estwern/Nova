@@ -179,7 +179,7 @@ export function IdeaBloomFAB() {
           aria-controls={dlgId}
           onClick={() => openCard()}
           className="pointer-events-auto nova-idea-fab-pulse relative flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-full border border-[rgb(255_232_185/0.35)] bg-gradient-to-br from-[var(--nova-accent)] to-[#458238] text-lg text-white shadow-[0_14px_40px_rgba(0,0,0,0.45)] transition active:scale-95 md:h-16 md:w-16 md:text-xl"
-          title="Идея из заметок"
+          title="Один шаг из твоих заметок"
         >
           <span className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-visible">
             {particles.map((p) => (
@@ -202,7 +202,7 @@ export function IdeaBloomFAB() {
           <span aria-hidden className="relative drop-shadow-md">
             ✦
           </span>
-          <span className="sr-only">Получить идею на основе заметок</span>
+          <span className="sr-only">Получить идею из заметок — один следующий шаг</span>
         </button>
       </div>
 
@@ -222,7 +222,7 @@ export function IdeaBloomFAB() {
             className="fixed left-4 right-4 top-[48%] z-[62] mx-auto max-w-[min(100%,380px)] -translate-y-1/2 rounded-[2rem] border border-[var(--nova-border)] bg-[var(--nova-card)] p-4 pt-9 shadow-[0_28px_64px_rgba(0,0,0,0.55)] ring-2 ring-[rgb(255_232_185/0.12)] animate-[fadeNova_160ms_ease-out]"
           >
             <p className="text-center text-[11px] font-medium uppercase tracking-wide text-[var(--nova-muted)]">
-              от Nova
+              Твой следующий шаг
             </p>
             <h2
               id={`${dlgId}-title`}
@@ -253,14 +253,14 @@ export function IdeaBloomFAB() {
                 className="rounded-full bg-[var(--nova-accent)] px-4 py-2 text-xs font-medium text-white transition hover:bg-[var(--nova-accent-hover)]"
                 onClick={() => acceptIdea(idea.headline, idea.body, idea.hint)}
               >
-                Принять
+                Сделаю это
               </button>
               <button
                 type="button"
                 className="rounded-full bg-[var(--nova-bg)] px-4 py-2 text-xs font-medium text-[var(--nova-text)] ring-1 ring-[var(--nova-border)]"
                 onClick={() => saveIdea(idea.headline, idea.body, idea.hint)}
               >
-                Сохранить
+                Запомнить
               </button>
               <button
                 type="button"
@@ -268,7 +268,7 @@ export function IdeaBloomFAB() {
                 onClick={() => anotherIdea()}
                 disabled={isLoadingIdea}
               >
-                {isLoadingIdea ? "Подбираю..." : "Другая идея"}
+                {isLoadingIdea ? "Подбираю..." : "Другой шаг"}
               </button>
             </div>
             {isLoadingIdea ? (

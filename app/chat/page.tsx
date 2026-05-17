@@ -6,7 +6,7 @@ import { ForestDecor } from "@/components/decorative/ForestDecor";
 export const metadata: Metadata = {
   title: "Чат",
   description:
-    "Раздел чата для текстового диалога и уточнения заметок.",
+    "Разбери мысль без осуждения: Nova помогает структурировать, а не читать лекции.",
 };
 
 export default function ChatPage() {
@@ -14,11 +14,15 @@ export default function ChatPage() {
     <div className="relative mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
       <ForestDecor density="subtle" />
       <div className="relative z-[1] mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-[var(--nova-text)] sm:text-3xl">
-          Чат
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--nova-moss)]">
+          Поддержка и ясность
+        </p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--nova-text)] sm:text-3xl">
+          Когда в голове каша — поговори с Nova
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[var(--nova-muted)]">
-          В этом разделе можно вести диалог и переходить к заметкам или идеям.
+          Коротко опиши, что застряло. Получи структуру, один вопрос или следующий шаг — без
+          длинных «мотивационных» простыней. Идеи из чата можно сохранить через ✦.
         </p>
       </div>
       <div className="relative z-[1]">

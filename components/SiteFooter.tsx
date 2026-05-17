@@ -8,7 +8,7 @@ export function SiteFooter() {
           <div className="max-w-sm">
             <p className="text-sm font-semibold text-[var(--nova-text)]">Nova</p>
             <p className="mt-2 text-xs leading-relaxed text-[var(--nova-muted)]">
-              Сервис для заметок, просмотра тем и генерации идей.
+              Заметки, идеи и поддержка — когда в голове шумно, а начать хочется без вины.
             </p>
           </div>
           <nav

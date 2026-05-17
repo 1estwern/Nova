@@ -167,7 +167,7 @@ export function ChatPanel() {
                 void send();
               }
             }}
-            placeholder="Сообщение… (Enter — отправить, Shift+Enter — новая строка)"
+            placeholder="Что застряло в голове? (Enter — отправить)"
             rows={2}
             className="min-h-[44px] flex-1 resize-y rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-surface)] px-3 py-2 text-sm text-[var(--nova-text)] placeholder:text-[var(--nova-placeholder)] focus:border-[var(--nova-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nova-accent)]/20"
             disabled={loading}

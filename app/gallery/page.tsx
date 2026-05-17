@@ -5,7 +5,7 @@ import { PageHero } from "@/components/marketing/PageHero";
 export const metadata: Metadata = {
   title: "Галерея",
   description:
-    "Раздел с темами, сгруппированными по датам.",
+    "Повторяющиеся темы по дням — увидь, о чём ты думаешь на самом деле, и не теряй идеи в шуме.",
 };
 
 const timeline = [
@@ -31,15 +31,15 @@ export default function GalleryPage() {
     <div>
       <PageHero
         eyebrow="Галерея"
-        title="Галерея тем"
-        subtitle="Элементы сгруппированы по датам и направлениям. Это помогает быстро
-          просматривать историю заметок."
+        title="Твои темы — не хаос в голове"
+        subtitle="Заметки складываются по дням и направлениям. Видно, куда уходит внимание:
+          контент, привычки, работа — и что пора вынести в один шаг."
       >
         <Link
           href="/notes"
           className="rounded-full border border-[var(--nova-border)] bg-[var(--nova-surface)] px-7 py-2.5 text-sm font-medium text-[var(--nova-text)] transition hover:border-[var(--nova-accent)]/45"
         >
-          Вернуться к постам
+          Добавить заметку в ленту
         </Link>
       </PageHero>
 
@@ -80,13 +80,13 @@ export default function GalleryPage() {
             href="/ideas"
             className="rounded-full bg-[var(--nova-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
           >
-            Открыть идеи
+            Следующий шаг из тем
           </Link>
           <Link
             href="/chat"
             className="rounded-full border border-[var(--nova-border)] px-6 py-2.5 text-sm font-semibold text-[var(--nova-text)]"
           >
-            Обсудить в чате
+            Разобрать тему в чате
           </Link>
         </div>
       </section>

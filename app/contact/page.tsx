@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Контакты",
+  description:
+    "Telegram Nova: бот для заметок и идей, канал с обновлениями. Быстрый вход без лишних форм.",
 };
 
 const channel =
@@ -14,9 +16,15 @@ const bot =
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
-      <h1 className="text-3xl font-semibold tracking-tight text-[var(--nova-text)]">Контакты</h1>
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--nova-moss)]">
+        Связь
+      </p>
+      <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--nova-text)]">
+        Nova рядом — в Telegram и на сайте
+      </h1>
       <p className="mt-4 text-sm leading-relaxed text-[var(--nova-muted)]">
-        Раздел содержит ссылки на каналы продукта.
+        Не нужно ждать письма с поддержки. Заходи в бот, когда мысль горит, или в канал — чтобы
+        не пропустить обновления и сценарии для креаторов.
       </p>
       <ul className="mt-8 space-y-4">
         <li className="rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-5 shadow-sm">
@@ -26,9 +34,11 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="text-sm font-semibold text-[var(--nova-accent)] hover:underline"
           >
-            Telegram-канал
+            Telegram-канал Nova
           </a>
-          <p className="mt-1 text-xs text-[var(--nova-muted)]">Публикация новостей и обновлений.</p>
+          <p className="mt-1 text-xs text-[var(--nova-muted)]">
+            Обновления, идеи для привычек и разборы — без спама.
+          </p>
         </li>
         <li className="rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-5 shadow-sm">
           <a
@@ -37,9 +47,11 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="text-sm font-semibold text-[var(--nova-accent)] hover:underline"
           >
-            Telegram-бот
+            Бот Nova
           </a>
-          <p className="mt-1 text-xs text-[var(--nova-muted)]">Переход в чат и разделы заметок.</p>
+          <p className="mt-1 text-xs text-[var(--nova-muted)]">
+            Заметки и идеи в привычном мессенджере — когда открывать сайт лень.
+          </p>
         </li>
       </ul>
     </div>

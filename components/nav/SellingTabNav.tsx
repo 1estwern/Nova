@@ -55,7 +55,7 @@ export function SellingTabNav() {
           <span aria-hidden className="opacity-90">
             ✦
           </span>
-          Генерация идей
+          Идея дня
           <span aria-hidden className="opacity-90">
             ✦
           </span>

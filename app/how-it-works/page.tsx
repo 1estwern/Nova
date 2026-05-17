@@ -1,36 +1,48 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Как это работает",
+  description:
+    "Заметка → реакция → паттерн → один шаг. Цикл Nova для прокрастинации, СДВГ и креаторов.",
 };
 
 const steps = [
   {
     step: "1",
-    title: "Создание заметки",
-    text: "Пользователь добавляет текст, дату и при необходимости теги.",
+    title: "Выгрузи мысль в заметку",
+    text: "Без структуры и без «идеального» текста — одна фраза, пока не забылась.",
   },
   {
     step: "2",
-    title: "Выбор реакции",
-    text: "Реакция фиксирует важность записи для последующей обработки.",
+    title: "Отметь реакцией",
+    text: "❤️ важно · 🔥 в работе · 🌱 позже · 🧭 разобрать — так Nova понимает приоритет.",
   },
   {
     step: "3",
-    title: "Просмотр галереи",
-    text: "Галерея показывает темы и периодичность заметок по датам.",
+    title: "Посмотри галерею",
+    text: "Повторяющиеся темы по дням — видно, куда реально уходит внимание.",
   },
   {
     step: "4",
-    title: "Генерация идеи",
-    text: "Система формирует карточку идеи на основе накопленных записей и реакций.",
+    title: "Сделай один шаг",
+    text: "Идея из ✦ или разговор в чате — не список на неделю, а действие на сегодня.",
   },
 ];
 
 export default function HowItWorksPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
-      <h1 className="text-3xl font-semibold tracking-tight text-[var(--nova-text)]">Общий процесс работы</h1>
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--nova-moss)]">
+        Процесс
+      </p>
+      <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--nova-text)]">
+        Четыре шага — и ты снова в движении
+      </h1>
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--nova-muted)]">
+        Nova не требует идеальной дисциплины. Достаточно коротких записей и честных реакций —
+        остальное система соберёт в подсказку.
+      </p>
       <ol className="mt-10 grid gap-5 md:grid-cols-2">
         {steps.map((s) => (
           <li key={s.step} className="rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-5">
@@ -40,6 +52,12 @@ export default function HowItWorksPage() {
           </li>
         ))}
       </ol>
+      <Link
+        href="/notes"
+        className="mt-10 inline-flex rounded-full bg-[var(--nova-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
+      >
+        Начать с одной заметки
+      </Link>
     </div>
   );
 }

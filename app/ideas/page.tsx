@@ -3,26 +3,26 @@ import Link from "next/link";
 import { ForestDecor } from "@/components/decorative/ForestDecor";
 
 export const metadata: Metadata = {
-  title: "Генерация идей",
+  title: "Идеи",
   description:
-    "Раздел с идеями, сформированными из заметок, реакций и тем.",
+    "Один следующий шаг из твоих заметок: Nova учитывает текст, теги и реакции — без абстрактных советов.",
 };
 
 const steps = [
   {
     n: "01",
-    t: "Сбор данных",
-    d: "Система читает текст заметок, теги и частоту тем.",
+    t: "Читаем то, что ты уже написал",
+    d: "Заметки, теги и повторы тем — не пустой «мотивационный» текст из интернета.",
   },
   {
     n: "02",
-    t: "Учет реакций",
-    d: "Реакции влияют на приоритет тем при подборе идеи.",
+    t: "Смотрим, что горит",
+    d: "❤️ 🔥 🌱 🧭 показывают приоритет: что важно сейчас, что отложить, что разобрать.",
   },
   {
     n: "03",
-    t: "Показ результата",
-    d: "Пользователь получает варианты идеи и может выбрать следующий шаг.",
+    t: "Даём один шаг",
+    d: "Карточка идеи или разговор в чате — не список из 20 пунктов на неделю.",
   },
 ];
 
@@ -41,29 +41,32 @@ export default function IdeasPage() {
         />
         <div className="relative z-[2] mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--nova-moss)]">
-            Генерация идей
+            Идеи из твоего контекста
           </p>
           <h1 className="mt-5 max-w-4xl text-3xl font-semibold tracking-tight text-[var(--nova-forest)] sm:text-4xl md:text-5xl">
-            Как работает генерация идей.
+            Один шаг вместо очередного «надо бы всё»
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--nova-muted)] sm:text-lg">
-            В этом разделе описан общий процесс: от заметок и реакций до готовых предложений.
+            Nova не придумывает жизнь за тебя. Она собирает сигналы из заметок и реакций и
+            предлагает то, что логично сделать дальше — идею, привычку или маленькое действие.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <Link
               href="/notes"
               className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-black/25"
             >
-              Сначала заметки — источник сигналов
+              Добавить заметку — топливо для идеи
             </Link>
             <Link
               href="/chat"
-              className="rounded-full border border-[var(--nova-border)] px-8 py-3 text-sm font-semibold text-[var(--nova-placeholder)] hover:text-[var(--nova-text)]"
-              title="Дополнительный раздел"
+              className="rounded-full border border-[var(--nova-border)] px-8 py-3 text-sm font-semibold text-[var(--nova-text)] hover:border-[var(--nova-accent)]/40"
             >
-              Открыть чат
+              Разобрать в чате
             </Link>
           </div>
+          <p className="mt-6 text-sm text-[var(--nova-placeholder)]">
+            Или нажми ✦ в углу экрана — карточка идеи за пару секунд.
+          </p>
         </div>
       </section>
 
