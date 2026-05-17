@@ -8,6 +8,7 @@ import {
   createUserNote,
   loadUserNotes,
   normalizeNote,
+  NOTES_UPDATED_EVENT,
   postsForFeed,
   saveUserNotes,
   type NotePost,
@@ -25,10 +26,17 @@ export function NotesPageContent() {
   const [imageError, setImageError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const refreshNotes = useCallback(() => {
     setUserPosts(loadUserNotes());
-    setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    refreshNotes();
+    setHydrated(true);
+    const onUpdate = () => refreshNotes();
+    window.addEventListener(NOTES_UPDATED_EVENT, onUpdate);
+    return () => window.removeEventListener(NOTES_UPDATED_EVENT, onUpdate);
+  }, [refreshNotes]);
 
   useEffect(() => {
     if (!hydrated) return;

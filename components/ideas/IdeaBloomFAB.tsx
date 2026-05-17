@@ -4,6 +4,8 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { stashChatSeedPrompt } from "@/lib/chat-storage";
 import { DEMO_IDEAS } from "@/lib/demo-ideas";
+import { NOTE_REACTIONS, type ReactionIcon } from "@/lib/note-reactions";
+import { appendUserNote } from "@/lib/notes-storage";
 
 type Particle = {
   id: number;
@@ -25,6 +27,8 @@ type SavedIdea = {
   savedAt: string;
 };
 
+type DialogStep = "actions" | "pick-reaction";
+
 function pickIdeaIndex(prev: number): number {
   const n = DEMO_IDEAS.length;
   if (n <= 1) return 0;
@@ -37,16 +41,26 @@ function pickIdeaIndex(prev: number): number {
   return next;
 }
 
+function ideaToNoteText(headline: string, body: string, hint?: string): string {
+  const lines = [`#Идея ${headline}`, body];
+  if (hint?.trim()) lines.push(hint.trim());
+  return lines.join("\n\n");
+}
+
 export function IdeaBloomFAB() {
   const router = useRouter();
   const dlgId = useId();
   const [open, setOpen] = useState(false);
+  const [dialogStep, setDialogStep] = useState<DialogStep>("actions");
   const [ideaIdx, setIdeaIdx] = useState(0);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isLoadingIdea, setIsLoadingIdea] = useState(false);
-  const [saveNote, setSaveNote] = useState<string | null>(null);
   const burstId = useRef(0);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  const resetDialog = useCallback(() => {
+    setDialogStep("actions");
+  }, []);
 
   const spawnBurst = useCallback(() => {
     const idBase = burstId.current++;
@@ -73,39 +87,41 @@ export function IdeaBloomFAB() {
 
   const openCard = useCallback(() => {
     setIdeaIdx((prev) => pickIdeaIndex(prev));
+    resetDialog();
     spawnBurst();
     setOpen(true);
-  }, [spawnBurst]);
+  }, [resetDialog, spawnBurst]);
 
-  const closeCard = useCallback(() => setOpen(false), []);
+  const closeCard = useCallback(() => {
+    setOpen(false);
+    resetDialog();
+  }, [resetDialog]);
 
   const anotherIdea = useCallback(() => {
     if (isLoadingIdea) return;
     setIsLoadingIdea(true);
+    resetDialog();
     window.setTimeout(() => {
       setIdeaIdx((prev) => pickIdeaIndex(prev));
       spawnBurst();
       setIsLoadingIdea(false);
     }, 760);
-  }, [isLoadingIdea, spawnBurst]);
+  }, [isLoadingIdea, resetDialog, spawnBurst]);
 
-  const saveIdea = useCallback((headline: string, body: string, hint?: string) => {
-    try {
-      const raw = localStorage.getItem(SAVED_IDEAS_KEY);
-      const parsed = raw ? (JSON.parse(raw) as SavedIdea[]) : [];
-      const next = Array.isArray(parsed) ? parsed : [];
-      const exists = next.some((item) => item.headline === headline && item.body === body);
-      if (!exists) {
-        next.unshift({ headline, body, hint, savedAt: new Date().toISOString() });
-      }
-      localStorage.setItem(SAVED_IDEAS_KEY, JSON.stringify(next.slice(0, 25)));
-      setSaveNote("Я запомнила эту идею");
-      window.setTimeout(() => setSaveNote(null), 1700);
-    } catch {
-      setSaveNote("Идея сохранена локально");
-      window.setTimeout(() => setSaveNote(null), 1700);
-    }
+  const startRemember = useCallback(() => {
+    setDialogStep("pick-reaction");
   }, []);
+
+  const saveIdeaWithReaction = useCallback(
+    (headline: string, body: string, hint: string | undefined, reaction: ReactionIcon) => {
+      appendUserNote({
+        text: ideaToNoteText(headline, body, hint),
+        top: reaction,
+      });
+      closeCard();
+    },
+    [closeCard]
+  );
 
   const acceptIdea = useCallback(
     (headline: string, body: string, hint?: string) => {
@@ -144,11 +160,17 @@ export function IdeaBloomFAB() {
     if (!open) return;
     closeBtnRef.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeCard();
+      if (e.key === "Escape") {
+        if (dialogStep === "pick-reaction") {
+          setDialogStep("actions");
+        } else {
+          closeCard();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, closeCard]);
+  }, [open, closeCard, dialogStep]);
 
   useEffect(() => {
     if (open) {
@@ -160,6 +182,7 @@ export function IdeaBloomFAB() {
   }, [open]);
 
   const idea = DEMO_IDEAS[ideaIdx] ?? DEMO_IDEAS[0];
+  const pickingReaction = dialogStep === "pick-reaction";
 
   return (
     <>
@@ -217,7 +240,7 @@ export function IdeaBloomFAB() {
             className="fixed left-4 right-4 top-[48%] z-[62] mx-auto max-w-[min(100%,380px)] -translate-y-1/2 rounded-[2rem] border border-[var(--nova-border)] bg-[var(--nova-card)] p-4 pt-9 shadow-[0_28px_64px_rgba(0,0,0,0.55)] ring-2 ring-[rgb(255_232_185/0.12)] animate-[fadeNova_160ms_ease-out]"
           >
             <p className="text-center text-[11px] font-medium uppercase tracking-wide text-[var(--nova-muted)]">
-              Твой следующий шаг
+              {pickingReaction ? "Сохранить в заметки" : "Твой следующий шаг"}
             </p>
             <h2
               id={`${dlgId}-title`}
@@ -228,45 +251,75 @@ export function IdeaBloomFAB() {
             <p className="mx-auto mt-2 max-w-[300px] text-center text-xs leading-relaxed text-[var(--nova-muted)]">
               {idea.body}
             </p>
-            {idea.hint ? (
+            {idea.hint && !pickingReaction ? (
               <p className="mx-auto mt-3 max-w-[280px] text-center text-[11px] text-[var(--nova-placeholder)]">
                 {idea.hint}
               </p>
             ) : null}
-            {saveNote ? (
-              <p
-                className="mx-auto mt-2 max-w-[280px] text-center text-[11px] text-[var(--nova-accent-hover)]"
-                aria-live="polite"
-              >
-                {saveNote}
-              </p>
-            ) : null}
 
-            <div className="mt-5 flex flex-wrap justify-center gap-2 border-t border-[var(--nova-border)] pt-5">
-              <button
-                type="button"
-                className="rounded-full bg-[var(--nova-accent)] px-4 py-2 text-xs font-medium text-white transition hover:bg-[var(--nova-accent-hover)]"
-                onClick={() => acceptIdea(idea.headline, idea.body, idea.hint)}
-              >
-                Сделаю это
-              </button>
-              <button
-                type="button"
-                className="rounded-full bg-[var(--nova-bg)] px-4 py-2 text-xs font-medium text-[var(--nova-text)] ring-1 ring-[var(--nova-border)]"
-                onClick={() => saveIdea(idea.headline, idea.body, idea.hint)}
-              >
-                Запомнить
-              </button>
-              <button
-                type="button"
-                className="rounded-full bg-[var(--nova-bg)] px-4 py-2 text-xs font-medium text-[var(--nova-muted)] ring-1 ring-[var(--nova-border)] disabled:opacity-60"
-                onClick={() => anotherIdea()}
-                disabled={isLoadingIdea}
-              >
-                {isLoadingIdea ? "Подбираю..." : "Другой шаг"}
-              </button>
-            </div>
-            {isLoadingIdea ? (
+            {pickingReaction ? (
+              <div className="mt-5 border-t border-[var(--nova-border)] pt-5">
+                <p className="text-center text-xs font-medium text-[var(--nova-text)]">
+                  Как отметить эту идею?
+                </p>
+                <p className="mx-auto mt-1 max-w-[260px] text-center text-[11px] text-[var(--nova-placeholder)]">
+                  Выбери реакцию — идея появится в ленте заметок
+                </p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  {NOTE_REACTIONS.map((r) => (
+                    <button
+                      key={r.label}
+                      type="button"
+                      title={r.label}
+                      aria-label={`${r.label}: ${r.hint}`}
+                      onClick={() =>
+                        saveIdeaWithReaction(idea.headline, idea.body, idea.hint, r.icon)
+                      }
+                      className="flex flex-col items-center gap-1 rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-surface)] px-3 py-2.5 transition hover:border-[var(--nova-accent)]/50 hover:bg-[var(--nova-accent-soft)]"
+                    >
+                      <span className="text-xl leading-none">{r.icon}</span>
+                      <span className="text-[10px] font-medium text-[var(--nova-muted)]">
+                        {r.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDialogStep("actions")}
+                  className="mx-auto mt-4 flex text-[11px] font-medium text-[var(--nova-placeholder)] hover:text-[var(--nova-text)]"
+                >
+                  ← Назад
+                </button>
+              </div>
+            ) : (
+              <div className="mt-5 flex flex-wrap justify-center gap-2 border-t border-[var(--nova-border)] pt-5">
+                <button
+                  type="button"
+                  className="rounded-full bg-[var(--nova-accent)] px-4 py-2 text-xs font-medium text-white transition hover:bg-[var(--nova-accent-hover)]"
+                  onClick={() => acceptIdea(idea.headline, idea.body, idea.hint)}
+                >
+                  Сделаю это
+                </button>
+                <button
+                  type="button"
+                  className="rounded-full bg-[var(--nova-bg)] px-4 py-2 text-xs font-medium text-[var(--nova-text)] ring-1 ring-[var(--nova-border)]"
+                  onClick={() => startRemember()}
+                >
+                  Запомнить
+                </button>
+                <button
+                  type="button"
+                  className="rounded-full bg-[var(--nova-bg)] px-4 py-2 text-xs font-medium text-[var(--nova-muted)] ring-1 ring-[var(--nova-border)] disabled:opacity-60"
+                  onClick={() => anotherIdea()}
+                  disabled={isLoadingIdea}
+                >
+                  {isLoadingIdea ? "Подбираю..." : "Другой шаг"}
+                </button>
+              </div>
+            )}
+
+            {isLoadingIdea && !pickingReaction ? (
               <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-[var(--nova-placeholder)]">
                 <span className="inline-block h-3 w-3 animate-spin rounded-full border border-[var(--nova-border)] border-t-[var(--nova-accent)]" />
                 Генерирую другую идею...

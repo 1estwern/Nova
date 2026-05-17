@@ -166,3 +166,14 @@ export function createUserNote(input: {
     createdAt: now.toISOString(),
   });
 }
+
+/** Добавить запись в ленту (localStorage + событие обновления). */
+export function appendUserNote(input: {
+  text: string;
+  top: ReactionIcon;
+  imageUrl?: string;
+}): NotePost {
+  const note = createUserNote(input);
+  saveUserNotes([note, ...loadUserNotes()]);
+  return note;
+}
