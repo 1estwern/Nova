@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { chatAutostartFromNotesHref } from "@/lib/chat-routes";
 import {
   DEFAULT_REACTION,
   NOTE_REACTIONS,
@@ -349,7 +350,7 @@ export function NotesPageContent() {
             ))}
           </ul>
           <Link
-            href="/ideas"
+            href={chatAutostartFromNotesHref()}
             className="mt-7 inline-flex rounded-full bg-[var(--nova-accent)] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
           >
             Идея по моим реакциям

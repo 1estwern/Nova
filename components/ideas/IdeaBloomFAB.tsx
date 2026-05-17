@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { stashChatSeedPrompt } from "@/lib/chat-storage";
 import { DEMO_IDEAS } from "@/lib/demo-ideas";
 
 type Particle = {
@@ -17,8 +18,6 @@ type Particle = {
 
 const GLYPHS = ["✿", "🌸", "🌿", "🍃", "♪", "♫", "‧"];
 const SAVED_IDEAS_KEY = "nova-muse-saved-ideas-v1";
-const CHAT_DRAFT_PROMPT_KEY = "nova-muse-chat-draft-prompt-v1";
-
 type SavedIdea = {
   headline: string;
   body: string;
@@ -134,11 +133,7 @@ export function IdeaBloomFAB() {
       ]
         .filter(Boolean)
         .join("\n");
-      try {
-        sessionStorage.setItem(CHAT_DRAFT_PROMPT_KEY, prompt);
-      } catch {
-        /* ignore */
-      }
+      stashChatSeedPrompt(prompt);
       closeCard();
       router.push("/chat?autostart=1");
     },

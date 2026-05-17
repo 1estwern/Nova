@@ -3,12 +3,17 @@
 import ReactMarkdown from "react-markdown";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { takeChatSeedPrompt, CHAT_STORAGE_KEY } from "@/lib/chat-storage";
+import { buildNotesFeedSeedPrompt, CHAT_FROM_NOTES_PARAM } from "@/lib/notes-feed-prompt";
+import { loadUserNotes, postsForFeed } from "@/lib/notes-storage";
 
 type Msg = { role: "user" | "assistant"; content: string };
-type SendOptions = { textOverride?: string; hiddenUserMessage?: boolean };
-
-const STORAGE_KEY = "nova-muse-chat-v1";
-const CHAT_DRAFT_PROMPT_KEY = "nova-muse-chat-draft-prompt-v1";
+type SendOptions = {
+  textOverride?: string;
+  hiddenUserMessage?: boolean;
+  /** Новый диалог (например, идея из ленты) */
+  freshThread?: boolean;
+};
 
 export function ChatPanel() {
   const searchParams = useSearchParams();
@@ -17,10 +22,11 @@ export function ChatPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const autostartDone = useRef(false);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as unknown;
         if (Array.isArray(parsed)) setMessages(parsed as Msg[]);
@@ -32,7 +38,7 @@ export function ChatPanel() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
     } catch {
       /* ignore */
     }
@@ -48,9 +54,18 @@ export function ChatPanel() {
 
     setError(null);
     setInput("");
+    const base = options?.freshThread ? [] : messages;
     const next: Msg[] = options?.hiddenUserMessage
-      ? messages
-      : [...messages, { role: "user", content: text }];
+      ? base
+      : [...base, { role: "user", content: text }];
+    if (options?.freshThread) {
+      setMessages([]);
+      try {
+        localStorage.removeItem(CHAT_STORAGE_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
     if (!options?.hiddenUserMessage) {
       setMessages(next);
     }
@@ -85,23 +100,32 @@ export function ChatPanel() {
   }, [input, loading, messages]);
 
   useEffect(() => {
+    if (autostartDone.current) return;
     if (searchParams.get("autostart") !== "1") return;
     if (loading) return;
-    try {
-      const prompt = sessionStorage.getItem(CHAT_DRAFT_PROMPT_KEY)?.trim();
-      if (!prompt) return;
-      sessionStorage.removeItem(CHAT_DRAFT_PROMPT_KEY);
-      void send({ textOverride: prompt, hiddenUserMessage: true });
-    } catch {
-      /* ignore */
+
+    let prompt: string | null = null;
+    if (searchParams.get("from") === CHAT_FROM_NOTES_PARAM) {
+      const feed = postsForFeed(loadUserNotes());
+      prompt = buildNotesFeedSeedPrompt(feed);
+    } else {
+      prompt = takeChatSeedPrompt();
     }
+    if (!prompt) return;
+
+    autostartDone.current = true;
+    void send({
+      textOverride: prompt,
+      hiddenUserMessage: true,
+      freshThread: searchParams.get("from") === CHAT_FROM_NOTES_PARAM,
+    });
   }, [loading, searchParams, send]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
     setError(null);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(CHAT_STORAGE_KEY);
     } catch {
       /* ignore */
     }
@@ -125,8 +149,10 @@ export function ChatPanel() {
       <div className="flex-1 space-y-4 overflow-y-auto bg-[var(--nova-surface)]/50 px-4 py-4">
         {messages.length === 0 && !loading && (
           <p className="text-sm leading-relaxed text-[var(--nova-muted)]">
-            Напиши, о чём думаешь — одной мыслью или вопросом. Nova ответит
-            коротко и по сути.
+            {searchParams.get("from") === CHAT_FROM_NOTES_PARAM &&
+            searchParams.get("autostart") === "1"
+              ? "Nova читает твою ленту и подберёт один следующий шаг…"
+              : "Напиши, о чём думаешь — одной мыслью или вопросом. Nova ответит коротко и по сути."}
           </p>
         )}
         {messages.map((m, i) => (

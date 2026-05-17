@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NotesPageContent } from "@/components/notes/NotesPageContent";
 import { PageHero } from "@/components/marketing/PageHero";
+import { chatAutostartFromNotesHref } from "@/lib/chat-routes";
 
 export const metadata: Metadata = {
   title: "Заметки",
@@ -20,7 +21,7 @@ export default function NotesPage() {
       >
         <div className="flex flex-wrap justify-center gap-3">
           <Link
-            href="/ideas"
+            href={chatAutostartFromNotesHref()}
             className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/25 transition hover:to-[var(--nova-accent-hover)]"
           >
             Получить идею из ленты
