@@ -93,7 +93,7 @@ export function NoteFormPanel({
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           rows={4}
-          placeholder="О чём думаешь? Первый #тег станет категорией в галерее…"
+          placeholder="Одна фраза — без структуры. Первый #тег — категория в галерее…"
           className="w-full resize-y rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-surface)] px-4 py-3 text-sm leading-relaxed text-[var(--nova-text)] placeholder:text-[var(--nova-placeholder)] focus:border-[var(--nova-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nova-accent)]/25"
         />
       </label>

@@ -70,14 +70,13 @@ export function GalleryPageContent() {
             Пока что ты не делал заметки
           </p>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[var(--nova-muted)]">
-            Когда появятся записи в ленте, они автоматически разложатся по категориям — по
-            первому #тегу в тексте.
+            Запиши мысль в ленте — галерея покажет повторяющиеся темы по первому #тегу.
           </p>
           <Link
             href="/notes"
             className="mt-8 inline-flex rounded-full bg-[var(--nova-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
           >
-            Написать первую заметку
+            Записать мысль
           </Link>
         </div>
       </section>
@@ -191,7 +190,7 @@ export function GalleryPageContent() {
           href={chatAutostartFromNotesHref()}
           className="rounded-full bg-[var(--nova-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
         >
-          Следующий шаг из тем
+          Получить идею
         </Link>
         <Link
           href="/notes"

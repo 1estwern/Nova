@@ -1,22 +1,23 @@
 import Link from "next/link";
 import { ForestDecor } from "@/components/decorative/ForestDecor";
+import { chatAutostartFromNotesHref } from "@/lib/chat-routes";
 
 const highlights = [
   {
     title: "Идея вместо перегруза",
-    text: "Nova смотрит на твои заметки и реакции и предлагает один следующий шаг — не ещё один список на 40 пунктов.",
-    href: "/ideas",
+    text: "Nova анализирует твои заметки и реакции и помогает выбрать один следующий шаг вместо десятков разрозненных задач.",
+    href: chatAutostartFromNotesHref(),
     cta: "Получить идею",
   },
   {
     title: "Заметки без трения",
-    text: "Сбросил мысль в ленту, отметил ❤️ или 🔥 — и не потерял её в голове. Всё в одном месте, без «надо бы оформить».",
+    text: "Записывай мысль сразу, отмечай реакцией и не теряй её среди бесконечных черновиков. Всё сохраняется в одном месте, без лишней подготовки.",
     href: "/notes",
     cta: "Записать мысль",
   },
   {
     title: "Видно, о чём ты на самом деле",
-    text: "Галерея собирает повторяющиеся темы по дням — удобно, когда в потоке идей сложно увидеть главное.",
+    text: "Галерея показывает повторяющиеся темы и паттерны, чтобы ты быстрее замечал, что действительно занимает твои мысли.",
     href: "/gallery",
     cta: "Открыть темы",
   },
@@ -25,15 +26,15 @@ const highlights = [
 const audience = [
   {
     title: "Прокрастинация",
-    text: "Когда задачи копятся, а начать страшно. Nova режет шум до одного шага, который реально сделать сегодня.",
+    text: "Когда задач много, а начать сложно, Nova помогает убрать лишний шум и увидеть один реальный шаг на сегодня.",
   },
   {
     title: "СДВГ и расфокус",
-    text: "Когда мыслей много, а удержать фокус тяжело. Короткие записи, реакции и подсказки без длинных инструкций.",
+    text: "Когда внимание скачет, короткие записи и мягкие подсказки помогают не терять нить и быстрее возвращаться к делу.",
   },
   {
     title: "Контент-креаторы",
-    text: "Когда идей больше, чем опубликованного. Из заметок — темы, форматы и углы, которые уже звучат в твоих словах.",
+    text: "Когда идей больше, чем готового контента, Nova помогает находить темы, углы и форматы прямо из твоих заметок.",
   },
 ];
 
@@ -41,58 +42,58 @@ const steps = [
   {
     n: "1",
     title: "Выгрузи мысль",
-    text: "Одна фраза в заметку — без структуры и без «идеального» текста.",
+    text: "Просто запиши одну фразу — без структуры и без попытки сразу всё сформулировать идеально.",
   },
   {
     n: "2",
     title: "Отметь важное",
-    text: "Реакция показывает, что горит сейчас, а что можно отложить.",
+    text: "Реакция помогает понять, что сейчас действительно цепляет, а что можно отложить.",
   },
   {
     n: "3",
     title: "Увидь паттерн",
-    text: "Галерея и лента показывают, к чему ты возвращаешься снова и снова.",
+    text: "Лента и галерея показывают повторяющиеся темы и мысли, к которым ты возвращаешься.",
   },
   {
     n: "4",
     title: "Сделай шаг",
-    text: "Идея или чат помогают выбрать действие — и вернуться к записям, если нужно.",
+    text: "Получи идею или открой чат, чтобы выбрать следующее действие без перегруза.",
   },
 ];
 
 const proof = [
   {
     quote:
-      "Листала референсы вместо монтажа — Nova вернула одну тему на неделю, не ещё один список.",
-    who: "как в заметке про прокрастинацию",
+      "Листала референсы вместо монтажа — Nova помогла выбрать одну тему на неделю, а не утонуть в новых идеях.",
   },
   {
     quote:
-      "Поняла, что в 22:30 мысли честнее — перенесла сценарии на вечер, и наконец села писать.",
-    who: "как в заметке про ритм",
+      "Поймала, что лучше думаю вечером — перенесла сценарии на это время и наконец села писать.",
   },
   {
-    quote: "Идея из ✦ — один маленький шаг, а не «перестроить всю жизнь к понедельнику».",
-    who: "типичный сценарий в Nova",
+    quote:
+      "Идея из ✦ дала один маленький шаг, а не очередное обещание всё изменить с понедельника.",
   },
 ];
 
 const faq = [
   {
     q: "Это ещё один таск-менеджер?",
-    a: "Нет. Nova не заставляет вести проекты. Она помогает услышать себя в заметках и выбрать один следующий шаг.",
+    a: "Нет. Nova не заменяет проектные сервисы. Она помогает быстро разгрузить голову, увидеть главное и выбрать один следующий шаг.",
   },
   {
     q: "У меня нет дисциплины — смысл?",
-    a: "Именно для этого короткие записи и реакции: меньше трения, больше опоры на то, что ты уже написал.",
+    a: "Именно поэтому Nova сделана с минимальным трением: короткая запись, простая реакция, понятная подсказка. Не нужно «собираться» заранее.",
   },
   {
     q: "Идеи будут «из воздуха»?",
-    a: "Подсказки строятся на твоих текстах, тегах и реакциях — не на абстрактных советах из интернета.",
+    a: "Нет. Подсказки опираются на твои записи, реакции и повторяющиеся темы, а не на случайные советы.",
   },
 ];
 
 export default function HomePage() {
+  const ideaHref = chatAutostartFromNotesHref();
+
   return (
     <div>
       <section className="relative overflow-hidden border-b border-[var(--nova-border)] bg-[var(--nova-bg)]">
@@ -110,16 +111,15 @@ export default function HomePage() {
             Для прокрастинации, СДВГ и креаторов
           </p>
           <h1 className="mt-5 max-w-4xl text-3xl font-semibold leading-tight tracking-tight text-[var(--nova-forest)] sm:text-4xl md:text-5xl">
-            Из хаоса мыслей — один понятный следующий шаг
+            Nova помогает превратить хаос мыслей в один понятный следующий шаг
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--nova-muted)] sm:text-lg">
-            Записываешь мысль за 10 секунд. Nova видит, что для тебя важно, и подсказывает идею,
-            привычку или действие — без бесконечных списков и чувства, что ты снова «ничего не
-            сделал».
+            Записывай мысль за 10 секунд, отмечай важное и получай короткую подсказку — без
+            перегруза, длинных списков и чувства вины.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
-              href="/ideas"
+              href={ideaHref}
               className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-black/30 hover:to-[var(--nova-accent-hover)]"
             >
               Получить идею сейчас
@@ -131,9 +131,9 @@ export default function HomePage() {
               Выгрузить мысль в заметку
             </Link>
           </div>
-          <p className="mt-6 max-w-xl text-sm text-[var(--nova-placeholder)]">
-            Кнопка ✦ в углу — идея из твоих записей за пару секунд. Чат — когда нужно разобрать
-            мысль вслух.
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-[var(--nova-placeholder)]">
+            Кнопка ✦ быстро превращает твои заметки в идею или следующий шаг. Чат помогает
+            разобрать мысль, когда нужно проговорить всё вслух и спокойно собрать смысл.
           </p>
         </div>
       </section>
@@ -141,20 +141,19 @@ export default function HomePage() {
       <section className="border-b border-[var(--nova-border)] bg-[var(--nova-surface)] py-10">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="max-w-3xl text-sm leading-relaxed text-[var(--nova-muted)] sm:text-base">
-            <span className="font-semibold text-[var(--nova-forest)]">Знакомо?</span> В голове 20
-            идей, 3 «надо бы», и ноль энергии выбрать, с чего начать. Nova не мотивирует
-            плакатами — она превращает твои же заметки в опору: что важно, что повторяется, что
-            сделать первым.
+            <span className="font-semibold text-[var(--nova-forest)]">Знакомо?</span> Когда в
+            голове слишком много идей, задач и «надо бы», трудно понять, с чего начать. Nova не
+            давит мотивацией — она помогает увидеть, что важно именно сейчас.
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
         <h2 className="text-2xl font-semibold text-[var(--nova-text)]">
-          Что ты получаешь — не «функции», а результат
+          Что ты получаешь — не набор функций, а понятный результат
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-[var(--nova-muted)]">
-          Меньше шума. Больше ясности. Один шаг, который можно сделать сегодня.
+          Меньше шума. Больше ясности. Один шаг, который можно сделать уже сегодня.
         </p>
         <ul className="mt-8 grid gap-5 md:grid-cols-3">
           {highlights.map((item) => (
@@ -178,7 +177,12 @@ export default function HomePage() {
 
       <section className="border-t border-[var(--nova-border)] bg-[var(--nova-surface)] py-14 md:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-2xl font-semibold text-[var(--nova-text)]">Кому Nova реально помогает</h2>
+          <h2 className="text-2xl font-semibold text-[var(--nova-text)]">
+            Для кого Nova особенно полезна
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm text-[var(--nova-muted)]">
+            Если мысли мешают начать, Nova помогает разложить их без давления и лишней сложности.
+          </p>
           <ul className="mt-8 grid gap-5 md:grid-cols-3">
             {audience.map((a) => (
               <li
@@ -196,7 +200,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
         <h2 className="text-2xl font-semibold text-[var(--nova-text)]">Как это работает</h2>
         <p className="mt-3 max-w-2xl text-sm text-[var(--nova-muted)]">
-          Четыре шага без сложной настройки — цикл, который можно повторять каждый день.
+          Четыре простых шага, которые можно повторять каждый день.
         </p>
         <ol className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
@@ -221,16 +225,17 @@ export default function HomePage() {
       <section className="border-t border-[var(--nova-border)] bg-[var(--nova-surface)] py-14 md:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <h2 className="text-2xl font-semibold text-[var(--nova-text)]">
-            Как это ощущается на практике
+            Как это выглядит в реальной жизни
           </h2>
           <ul className="mt-8 grid gap-5 md:grid-cols-3">
             {proof.map((p) => (
               <li
-                key={p.who}
+                key={p.quote}
                 className="rounded-3xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-6"
               >
-                <p className="text-sm leading-relaxed text-[var(--nova-text)]">&ldquo;{p.quote}&rdquo;</p>
-                <p className="mt-4 text-xs font-medium text-[var(--nova-placeholder)]">{p.who}</p>
+                <p className="text-sm leading-relaxed text-[var(--nova-text)]">
+                  &ldquo;{p.quote}&rdquo;
+                </p>
               </li>
             ))}
           </ul>
@@ -238,7 +243,9 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
-        <h2 className="text-2xl font-semibold text-[var(--nova-text)]">Частые сомнения</h2>
+        <h2 className="text-2xl font-semibold text-[var(--nova-text)]">
+          Частые вопросы и сомнения
+        </h2>
         <ul className="mt-8 space-y-4">
           {faq.map((item) => (
             <li
@@ -256,15 +263,14 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="rounded-3xl border border-[var(--nova-border)] bg-[var(--nova-card)] p-8 shadow-[0_16px_42px_rgba(0,0,0,0.24)] md:p-10">
             <h2 className="text-xl font-semibold text-[var(--nova-forest)] md:text-2xl">
-              Не жди «идеального дня» — начни с одной заметки
+              Не жди идеального дня — начни с одной заметки
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--nova-muted)]">
-              Реакции и повторяющиеся темы подсказывают, куда уходит внимание. Нажми ✦ — получи
-              идею. Если застрял — открой чат и разбери мысль без осуждения.
+              Отметь важное, увидь повторяющиеся темы и получи следующий шаг без лишнего шума.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
-                href="/ideas"
+                href={ideaHref}
                 className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/25 hover:to-[var(--nova-accent-hover)]"
               >
                 Получить идею сейчас
@@ -274,12 +280,6 @@ export default function HomePage() {
                 className="rounded-full bg-[var(--nova-accent-soft)] px-5 py-2.5 text-sm font-semibold text-[var(--nova-accent-hover)] ring-1 ring-[var(--nova-accent)]/30"
               >
                 Разобрать мысль в чате
-              </Link>
-              <Link
-                href="/contact"
-                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[var(--nova-muted)] ring-1 ring-[var(--nova-border)] hover:text-[var(--nova-text)]"
-              >
-                Telegram Nova
               </Link>
             </div>
           </div>

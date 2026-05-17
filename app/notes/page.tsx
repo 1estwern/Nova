@@ -7,7 +7,7 @@ import { chatAutostartFromNotesHref } from "@/lib/chat-routes";
 export const metadata: Metadata = {
   title: "Заметки",
   description:
-    "Выгрузи мысль за 10 секунд. Реакции покажут приоритет — Nova превратит ленту в идеи и шаги.",
+    "Записывай мысль за 10 секунд, отмечай важное — Nova поможет выбрать один следующий шаг без перегруза.",
 };
 
 export default function NotesPage() {
@@ -15,22 +15,21 @@ export default function NotesPage() {
     <div>
       <PageHero
         eyebrow="Заметки"
-        title="Сбрось мысль — не держи в голове"
-        subtitle="Одна фраза в ленту. Реакция покажет, что горит. Nova соберёт из этого идею
-          или следующий шаг — без бесконечного планирования."
+        title="Записывай мысль сразу — без подготовки"
+        subtitle="Одна фраза в ленту, реакция на важное. Всё сохраняется в одном месте — Nova соберёт из этого подсказку, а не очередной список задач."
       >
         <div className="flex flex-wrap justify-center gap-3">
           <Link
             href={chatAutostartFromNotesHref()}
             className="rounded-full bg-gradient-to-br from-[var(--nova-accent)] to-[#4e8f42] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/25 transition hover:to-[var(--nova-accent-hover)]"
           >
-            Получить идею из ленты
+            Получить идею сейчас
           </Link>
           <Link
             href="/gallery"
             className="rounded-full border border-[var(--nova-border)] bg-[var(--nova-surface)] px-6 py-2.5 text-sm font-medium text-[var(--nova-text)] transition hover:border-[var(--nova-accent)]/40"
           >
-            Увидеть повторяющиеся темы
+            Открыть темы
           </Link>
         </div>
       </PageHero>

@@ -151,8 +151,8 @@ export function ChatPanel() {
           <p className="text-sm leading-relaxed text-[var(--nova-muted)]">
             {searchParams.get("from") === CHAT_FROM_NOTES_PARAM &&
             searchParams.get("autostart") === "1"
-              ? "Nova читает твою ленту и подберёт один следующий шаг…"
-              : "Напиши, о чём думаешь — одной мыслью или вопросом. Nova ответит коротко и по сути."}
+              ? "Nova читает ленту и подберёт один следующий шаг…"
+              : "Опиши мысль одной фразой. Nova поможет собрать смысл и выбрать шаг — без длинных списков."}
           </p>
         )}
         {messages.map((m, i) => (
@@ -193,7 +193,7 @@ export function ChatPanel() {
                 void send();
               }
             }}
-            placeholder="Что застряло в голове? (Enter — отправить)"
+            placeholder="Что застряло? Одна мысль или вопрос (Enter — отправить)"
             rows={2}
             className="min-h-[44px] flex-1 resize-y rounded-2xl border border-[var(--nova-border)] bg-[var(--nova-surface)] px-3 py-2 text-sm text-[var(--nova-text)] placeholder:text-[var(--nova-placeholder)] focus:border-[var(--nova-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--nova-accent)]/20"
             disabled={loading}

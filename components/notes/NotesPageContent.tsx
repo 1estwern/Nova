@@ -149,7 +149,7 @@ export function NotesPageContent() {
           <NoteFormPanel
             mode="create"
             title="Новая запись"
-            hint="Текст, фото по желанию и реакция. Первый #тег — категория в галерее."
+            hint="Одна фраза, фото по желанию, реакция. Первый #тег — категория в галерее."
             text={text}
             onTextChange={(v) => {
               setText(v);
@@ -164,7 +164,7 @@ export function NotesPageContent() {
             submitError={submitError}
             onSubmit={submitCreate}
             onCancel={closeCompose}
-            submitLabel="Сохранить в ленту"
+            submitLabel="Записать мысль"
           />
         </div>
       ) : null}
@@ -276,11 +276,11 @@ export function NotesPageContent() {
 
         <aside className="rounded-3xl border border-[var(--nova-border)] bg-[var(--nova-surface)] p-6 shadow-[0_14px_36px_rgba(0,0,0,0.24)] lg:sticky lg:top-24">
           <h2 className="text-base font-semibold text-[var(--nova-forest)]">
-            Реакции = приоритет без списков
+            Отметь важное — без списков
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-[var(--nova-muted)]">
-            Не нужно сортировать папки. Одним тапом показываешь, что важно — Nova подстроит идеи
-            под это.
+            Реакция помогает понять, что сейчас цепляет, а что можно отложить. Nova учтёт это в
+            подсказках.
           </p>
           <ul className="mt-6 space-y-4">
             {NOTE_REACTIONS.map((r) => (
@@ -299,7 +299,7 @@ export function NotesPageContent() {
             href={chatAutostartFromNotesHref()}
             className="mt-7 inline-flex rounded-full bg-[var(--nova-accent)] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[var(--nova-accent-hover)]"
           >
-            Идея по моим реакциям
+            Получить идею
           </Link>
         </aside>
       </div>
